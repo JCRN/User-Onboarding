@@ -3,9 +3,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Form, Field, withFormik } from 'formik'
 import * as Yup from 'yup'
+import DisplayUsers from './DisplayUsers'
+
+import '../stylesheets/components/userform.scss'
 
 const UserForm = ({ errors, touched, values, isSubmitting, status }) => {
   const [users, setUsers] = useState([])
+  console.log(users)
 
   useEffect(() => {
     if (status) {
@@ -16,7 +20,7 @@ const UserForm = ({ errors, touched, values, isSubmitting, status }) => {
 
   return (
     <div className="user-form">
-      <h1>Add Users</h1>
+      <h1>Add An Account</h1>
       <Form>
         <Field type="text" name="name" placeholder="Name" />
         {touched.name && errors.name && <p className="error">{errors.name}</p>}
@@ -38,6 +42,9 @@ const UserForm = ({ errors, touched, values, isSubmitting, status }) => {
           Submit!
         </button>
       </Form>
+      {users.map(user => (
+        <DisplayUsers key={user.id} user={user} />
+      ))}
     </div>
   )
 }
@@ -69,6 +76,7 @@ const FormikUserForm = withFormik({
     axios
       .post('https://reqres.in/api/users/', values)
       .then(results => {
+        console.log(results.data)
         setStatus(results.data)
         resetForm()
         setSubmitting(false)
